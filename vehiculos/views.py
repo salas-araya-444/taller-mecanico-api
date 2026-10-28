@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from ordenes.models import OrdenServicio
+from ordenes.serializers import OrdenServicioSerializer
 from taller_backend.utilidades import tiene_rol
 from .models import Vehiculo
 from .serializers import VehiculoSerializer
@@ -98,3 +100,28 @@ def vehiculo_detalle_api(request, id):
 
 #-----------------------------------------------------------------------------------------------
 
+# Historial de un vehículo: todas sus órdenes con los repuestos usados.
+
+@api_view(['GET'])
+def historial_vehiculo_api(request, id):
+    if not request.user.is_authenticated:
+        return Response({'detail': 'Debe iniciar sesión...'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        vehiculo = Vehiculo.objects.get(id=id)
+    except Vehiculo.DoesNotExist:
+        return Response({'error': 'Vehículo no encontrado...'}, status=status.HTTP_404_NOT_FOUND)
+
+    # select_related trae el mecánico en la misma consulta.
+    # prefetch_related trae los repuestos de todas las órdenes de una vez,
+    # en lugar de hacer una consulta por cada orden.
+    ordenes = OrdenServicio.objects.filter(vehiculo=vehiculo).select_related(
+        'mecanico'
+    ).prefetch_related('detalles').order_by('-fecha_ingreso')
+
+    return Response({
+        'vehiculo': VehiculoSerializer(vehiculo).data,
+        'ordenes': OrdenServicioSerializer(ordenes, many=True).data
+    })
+
+#-----------------------------------------------------------------------------------------------
