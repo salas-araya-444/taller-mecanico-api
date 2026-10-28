@@ -3,14 +3,17 @@ from django.urls import include, path
 from rest_framework.authtoken.views import obtain_auth_token
 
 from clientes.views import perfil_api
+from facturacion.views import reportes_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', obtain_auth_token, name='api-token'),
     path('api/perfil/', perfil_api, name='perfil_api'),
+    path('api/reportes/', reportes_api, name='reportes_api'),
 
     path('api/clientes/', include('clientes.urls')),
     path('api/vehiculos/', include('vehiculos.urls')),
     path('api/repuestos/', include('repuestos.urls')),
     path('api/ordenes/', include('ordenes.urls')),
+    path('api/facturas/', include('facturacion.urls')),
 ]
