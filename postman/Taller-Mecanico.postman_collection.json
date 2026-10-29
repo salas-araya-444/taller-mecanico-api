@@ -1,0 +1,1940 @@
+{
+  "info": {
+    "_postman_id": "a7abc191-db9a-4ecc-943c-46df6b0312c9",
+    "name": "Taller Mecánico API",
+    "description": "Colección del Proyecto #1 de Desarrollo de Software IV.\n\nAntes de usarla: ejecute `python manage.py cargar_datos` e inicie el servidor.\nEjecute las carpetas en orden (o toda la colección con el Runner): cada solicitud guarda los ids y tokens que usan las siguientes.\n\nTodos los datos son ficticios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autenticación",
+      "item": [
+        {
+          "name": "Login administrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_admin\", pm.response.json().token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token"
+              ]
+            },
+            "description": "Obtiene el token del usuario de prueba **admin_taller** y lo guarda en la variable `token_admin`.\n\n**Rol usado:** ninguno (sin token)\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin_taller\",\n  \"password\": \"{{clave_prueba}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Login recepcionista",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_recepcion\", pm.response.json().token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token"
+              ]
+            },
+            "description": "Obtiene el token del usuario de prueba **recepcion** y lo guarda en la variable `token_recepcion`.\n\n**Rol usado:** ninguno (sin token)\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"recepcion\",\n  \"password\": \"{{clave_prueba}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Login mecánico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_mecanico\", pm.response.json().token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token"
+              ]
+            },
+            "description": "Obtiene el token del usuario de prueba **mecanico1** y lo guarda en la variable `token_mecanico`.\n\n**Rol usado:** ninguno (sin token)\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"mecanico1\",\n  \"password\": \"{{clave_prueba}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Perfil del mecánico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"mecanico_id\", pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/perfil/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "perfil"
+              ]
+            },
+            "description": "Devuelve el usuario autenticado y su rol. Guarda su id en `mecanico_id` para asignarle órdenes.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Clientes",
+      "item": [
+        {
+          "name": "Crear cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"cliente_id\", pm.response.json().id); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"cedula_nueva\", \"7\" + Date.now().toString().slice(-9));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Registra un cliente nuevo. La cédula se genera automáticamente para que la colección se pueda ejecutar varias veces.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 201",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Paula Ficticia Ramos\",\n  \"cedula\": \"{{cedula_nueva}}\",\n  \"telefono\": \"81234567\",\n  \"correo\": \"paula@correo-ficticio.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar clientes (búsqueda y paginación)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/?buscar=a&page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ],
+              "query": [
+                {
+                  "key": "buscar",
+                  "value": "a"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Búsqueda parcial por nombre (`buscar`) y paginación de 5 en 5 (`page`). Respuesta: `pagina_actual`, `total_paginas`, `total_registros`, `resultados`.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Obtener un cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/{{cliente_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{cliente_id}}"
+              ]
+            },
+            "description": "Consulta un cliente por id.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Actualizar teléfono (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/{{cliente_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{cliente_id}}"
+              ]
+            },
+            "description": "Actualización parcial del cliente.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"82223344\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: cédula duplicada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Regla: la cédula es única. Responde 400 con el campo `cedula`.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 400",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Copia\",\n  \"cedula\": \"{{cedula_nueva}}\",\n  \"telefono\": \"81234567\",\n  \"correo\": \"copia@correo-ficticio.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Sin el encabezado Authorization la API responde 401.\n\n**Rol usado:** ninguno (sin token)\n\n**Respuesta esperada:** HTTP 401"
+          }
+        },
+        {
+          "name": "Error: mecánico intenta crear cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Matriz de permisos: el mecánico solo consulta clientes. Responde 403.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 403",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"No permitido\",\n  \"cedula\": \"799999999\",\n  \"telefono\": \"81234567\",\n  \"correo\": \"x@correo-ficticio.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Vehículos",
+      "item": [
+        {
+          "name": "Crear vehículo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"vehiculo_id\", pm.response.json().id); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"placa_nueva\", \"PM\" + Date.now().toString().slice(-4));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/vehiculos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "vehiculos"
+              ]
+            },
+            "description": "Registra un vehículo del cliente creado. La placa se guarda en mayúsculas.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 201",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"{{cliente_id}}\",\n  \"placa\": \"{{placa_nueva}}\",\n  \"marca\": \"Mazda\",\n  \"modelo\": \"3\",\n  \"anio\": 2018,\n  \"kilometraje\": 70000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar vehículos (filtros combinados y búsqueda)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/vehiculos/?marca=Toyota&anio=2015&buscar=ABC",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "vehiculos"
+              ],
+              "query": [
+                {
+                  "key": "marca",
+                  "value": "Toyota"
+                },
+                {
+                  "key": "anio",
+                  "value": "2015"
+                },
+                {
+                  "key": "buscar",
+                  "value": "ABC"
+                }
+              ]
+            },
+            "description": "Filtros combinables: `cliente`, `marca`, `anio`. Búsqueda parcial `buscar` por placa. Con los datos de prueba devuelve el Toyota Corolla ABC123.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Actualizar kilometraje (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/vehiculos/{{vehiculo_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "vehiculos",
+                "{{vehiculo_id}}"
+              ]
+            },
+            "description": "Actualización parcial del vehículo.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kilometraje\": 70500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Repuestos",
+      "item": [
+        {
+          "name": "Crear repuesto (administrador)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"repuesto_id\", pm.response.json().id); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"codigo_nuevo\", \"PM-\" + Date.now().toString().slice(-6));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/repuestos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "repuestos"
+              ]
+            },
+            "description": "Solo el administrador gestiona el inventario. Se crea con stock 10.\n\n**Rol usado:** admin\n\n**Respuesta esperada:** HTTP 201",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"{{codigo_nuevo}}\",\n  \"nombre\": \"Disco de freno delantero\",\n  \"precio\": \"21000.00\",\n  \"stock\": 10,\n  \"stock_minimo\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar repuestos ordenados por precio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/repuestos/?ordenar=-precio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "repuestos"
+              ],
+              "query": [
+                {
+                  "key": "ordenar",
+                  "value": "-precio"
+                }
+              ]
+            },
+            "description": "Ordenamiento con `ordenar`: nombre, precio, -precio, stock o -stock (el `-` ordena de mayor a menor).\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Buscar repuesto por nombre",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/repuestos/?buscar=freno",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "repuestos"
+              ],
+              "query": [
+                {
+                  "key": "buscar",
+                  "value": "freno"
+                }
+              ]
+            },
+            "description": "Búsqueda parcial por nombre con `buscar`.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Error: precio negativo (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/repuestos/{{repuesto_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "repuestos",
+                "{{repuesto_id}}"
+              ]
+            },
+            "description": "Regla protegida también en PATCH: el precio no puede ser negativo.\n\n**Rol usado:** admin\n\n**Respuesta esperada:** HTTP 400",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"precio\": \"-500\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: recepcionista crea repuesto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/repuestos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "repuestos"
+              ]
+            },
+            "description": "Matriz de permisos: la recepcionista solo consulta el inventario.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 403",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"NO-001\",\n  \"nombre\": \"No permitido\",\n  \"precio\": \"100.00\",\n  \"stock\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Órdenes de servicio",
+      "item": [
+        {
+          "name": "Abrir orden",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"orden_id\", pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes"
+              ]
+            },
+            "description": "Abre una orden para el vehículo creado y la asigna a mecanico1. Inicia en estado RECIBIDA.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 201",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehiculo\": \"{{vehiculo_id}}\",\n  \"mecanico\": \"{{mecanico_id}}\",\n  \"falla_reportada\": \"Vibra al frenar y hace ruido.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: segunda orden abierta del mismo vehículo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes"
+              ]
+            },
+            "description": "Regla: un vehículo no puede tener dos órdenes abiertas (no facturadas).\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 400",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehiculo\": \"{{vehiculo_id}}\",\n  \"mecanico\": \"{{mecanico_id}}\",\n  \"falla_reportada\": \"Otra falla\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: agregar repuesto con orden Recibida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{orden_id}}/detalles/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "{{orden_id}}",
+                "detalles"
+              ]
+            },
+            "description": "Regla: solo se agregan repuestos cuando la orden está En reparación.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 400",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repuesto\": \"{{repuesto_id}}\",\n  \"cantidad\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Pasar a En reparación",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{orden_id}}/cambiar-estado/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "{{orden_id}}",
+                "cambiar-estado"
+              ]
+            },
+            "description": "El mecánico asignado avanza la orden: RECIBIDA → EN_REPARACION.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"EN_REPARACION\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Agregar repuesto usado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"detalle_id\", pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{orden_id}}/detalles/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "{{orden_id}}",
+                "detalles"
+              ]
+            },
+            "description": "Registra 3 unidades. El sistema descuenta el stock (10 → 7) y guarda el precio aplicado.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 201",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repuesto\": \"{{repuesto_id}}\",\n  \"cantidad\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: stock insuficiente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{orden_id}}/detalles/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "{{orden_id}}",
+                "detalles"
+              ]
+            },
+            "description": "Regla: no se puede usar más cantidad de la disponible en inventario.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 400",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repuesto\": 1,\n  \"cantidad\": 999\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modificar cantidad del repuesto (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/detalles/{{detalle_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "detalles",
+                "{{detalle_id}}"
+              ]
+            },
+            "description": "Baja de 3 a 2 unidades: la unidad sobrante vuelve al inventario (7 → 8).\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cantidad\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ver stock del repuesto después del ajuste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Stock coherente (8)\", function () { pm.expect(pm.response.json().stock).to.eql(8); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/repuestos/{{repuesto_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "repuestos",
+                "{{repuesto_id}}"
+              ]
+            },
+            "description": "Comprueba que el stock quedó en 8.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Error: saltar al estado Facturada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{orden_id}}/cambiar-estado/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "{{orden_id}}",
+                "cambiar-estado"
+              ]
+            },
+            "description": "Regla: Facturada solo se alcanza al generar la factura.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 400",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"FACTURADA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Finalizar con mano de obra",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{orden_id}}/cambiar-estado/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "{{orden_id}}",
+                "cambiar-estado"
+              ]
+            },
+            "description": "EN_REPARACION → FINALIZADA. Registra la mano de obra y la fecha de finalización.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 200",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"FINALIZADA\",\n  \"mano_obra\": \"18000.00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar órdenes (filtros combinados)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/?estado=FINALIZADA&mecanico={{mecanico_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "FINALIZADA"
+                },
+                {
+                  "key": "mecanico",
+                  "value": "{{mecanico_id}}"
+                }
+              ]
+            },
+            "description": "Filtros combinables: `estado`, `mecanico` y `vehiculo`. Paginado.\n\n**Rol usado:** admin\n\n**Respuesta esperada:** HTTP 200"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Facturación y reportes",
+      "item": [
+        {
+          "name": "Error: mecánico intenta facturar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_mecanico}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/facturas/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "facturas"
+              ]
+            },
+            "description": "Matriz de permisos: el mecánico no factura.\n\n**Rol usado:** mecanico\n\n**Respuesta esperada:** HTTP 403",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orden\": \"{{orden_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Generar factura",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"factura_id\", pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/facturas/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "facturas"
+              ]
+            },
+            "description": "Solo se envía la orden. El sistema calcula: subtotal = repuestos + mano de obra; IVA 13 %; total. La orden pasa a FACTURADA.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 201",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orden\": \"{{orden_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: facturar dos veces",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/facturas/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "facturas"
+              ]
+            },
+            "description": "Regla: cada orden se factura una sola vez.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 409",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orden\": \"{{orden_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Error: modificar orden facturada (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{orden_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "{{orden_id}}"
+              ]
+            },
+            "description": "Regla: una orden facturada no se modifica, tampoco con PATCH.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 409",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mano_obra\": \"1.00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ver factura",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/facturas/{{factura_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "facturas",
+                "{{factura_id}}"
+              ]
+            },
+            "description": "Consulta la factura con su número, subtotal, IVA y total.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Historial del vehículo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/vehiculos/{{vehiculo_id}}/historial/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "vehiculos",
+                "{{vehiculo_id}}",
+                "historial"
+              ]
+            },
+            "description": "Todas las órdenes del vehículo con sus repuestos (usa select_related y prefetch_related).\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Reportes del administrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reportes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reportes"
+              ]
+            },
+            "description": "Repuestos con bajo stock, repuestos más usados, órdenes por mecánico, órdenes por estado y total facturado.\n\n**Rol usado:** admin\n\n**Respuesta esperada:** HTTP 200"
+          }
+        },
+        {
+          "name": "Error: reportes como recepcionista",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_recepcion}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reportes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reportes"
+              ]
+            },
+            "description": "Solo el administrador ve los reportes.\n\n**Rol usado:** recepcion\n\n**Respuesta esperada:** HTTP 403"
+          }
+        },
+        {
+          "name": "Error: eliminar cliente con vehículos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/{{cliente_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{cliente_id}}"
+              ]
+            },
+            "description": "PROTECT: un cliente con vehículos no se elimina para conservar el historial.\n\n**Rol usado:** admin\n\n**Respuesta esperada:** HTTP 409"
+          }
+        },
+        {
+          "name": "Error: orden inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/999999/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ordenes",
+                "999999"
+              ]
+            },
+            "description": "Recurso que no existe: 404.\n\n**Rol usado:** admin\n\n**Respuesta esperada:** HTTP 404"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "clave_prueba",
+      "value": "Taller2026*"
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "token_recepcion",
+      "value": ""
+    },
+    {
+      "key": "token_mecanico",
+      "value": ""
+    },
+    {
+      "key": "mecanico_id",
+      "value": ""
+    },
+    {
+      "key": "cliente_id",
+      "value": ""
+    },
+    {
+      "key": "cedula_nueva",
+      "value": ""
+    },
+    {
+      "key": "vehiculo_id",
+      "value": ""
+    },
+    {
+      "key": "placa_nueva",
+      "value": ""
+    },
+    {
+      "key": "repuesto_id",
+      "value": ""
+    },
+    {
+      "key": "codigo_nuevo",
+      "value": ""
+    },
+    {
+      "key": "orden_id",
+      "value": ""
+    },
+    {
+      "key": "detalle_id",
+      "value": ""
+    },
+    {
+      "key": "factura_id",
+      "value": ""
+    }
+  ]
+}
